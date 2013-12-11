@@ -67,20 +67,20 @@ function wfEditPre ( $editPage, $output ) {
 	}
 
 	// Later namespacce permissions
-	foreach ($user_groups as $user_group) {
+	foreach ( $user_groups as $user_group ) {
 
-		if (isset($wgNamespacePermissionLockdown[$namespace]['source'])) {
+		if ( isset( $wgNamespacePermissionLockdown[$namespace]['source'] ) ) {
 			
 			$allowed_array = $wgNamespacePermissionLockdown[$namespace]['source'];
-			if (in_array($user_group, $allowed_array)) {
+			if ( in_array($user_group, $allowed_array ) ) {
 				$allowsource = 1;
 				break;
 			}
 		}
 	}
 
-	if ($allowsource < 1)  {
-		throw new PermissionsError("sourcepermission", array());
+	if ( $allowsource < 1 )  {
+		throw new PermissionsError( "sourcepermission", array() );
 		return false;
 	}
 	else {
@@ -112,20 +112,20 @@ function wfEditPreLock ( $article, &$content ) {
 	// Handle images when protected
 	if ( $namespace == 6 ) return true;
 
-        $action = "";
+	$action = "";
 
-        if (class_exists('MediaWiki')) {
-        	$class = new MediaWiki();
+	if ( class_exists( 'MediaWiki' ) ) {
+		$class = new MediaWiki();
 		$action = $class->getAction();
 	}
 
-        else { return true; }
+	else { return true; }
 
 
 	// First group permissions
 	foreach ( $user_groups as $user_group ) {
 
-		if ( isset($wgGroupPermissions[$user_group]['source']) ) {
+		if ( isset( $wgGroupPermissions[$user_group]['source'] )  ) {
 			if ( $wgGroupPermissions[$user_group]['source'] ) {
 				$allowsource = 1;
 				break;
@@ -134,22 +134,21 @@ function wfEditPreLock ( $article, &$content ) {
 	}
 
 	// Later namespacce permissions
-	foreach ($user_groups as $user_group) {
+	foreach ( $user_groups as $user_group ) {
 
-		if (isset($wgNamespacePermissionLockdown[$namespace]['source'])) {
+		if ( isset( $wgNamespacePermissionLockdown[$namespace]['source'] ) ) {
 			
 			$allowed_array = $wgNamespacePermissionLockdown[$namespace]['source'];
-			if (in_array($user_group, $allowed_array)) {
+			if ( in_array( $user_group, $allowed_array ) ) {
 				$allowsource = 1;
 				break;
 			}
 		}
 	}
 
-	if ($allowsource < 1 && $action== 'edit' )  {
+	if ( $allowsource < 1 && $action== 'edit' )  {
 		$content = "";
 	}
-
 
 	return true;
 	
