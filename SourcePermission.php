@@ -35,12 +35,8 @@ $wgGroupPermissions['sysop'        ]['source'] = true;
 #$wgAvailableRights[] = 'source';
 
 
-
 $wgNamespacePermissionLockdown[NS_MAIN]['source'] = array('sysop');
 
-
-$wglistProps = array('Has Author');
-$wglistOverride = array('sysop');
 
 function wfEditPre ( $editPage, $output ) {
 
