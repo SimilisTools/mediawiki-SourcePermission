@@ -24,7 +24,7 @@ $wgExtensionCredits['parserhook'][] = array(
 );
 
 $wgExtensionMessagesFiles['SourcePermission'] = dirname( __FILE__ ) . '/SourcePermission.i18n.php';
-#$wgHooks['EditPage::showEditForm:initial'][] = 'wfEditPre';
+$wgHooks['EditPage::showEditForm:initial'][] = 'wfEditPre';
 $wgHooks['ArticleAfterFetchContent'][] = 'wfEditPreLock';
 
 $wgGroupPermissions['*']['source'] = false;
