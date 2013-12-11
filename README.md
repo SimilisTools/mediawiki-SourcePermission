@@ -1,4 +1,4 @@
 mediawiki-SourcePermission
 ==========================
 
-MediaWiki extension for disable source access to wikitext pages
+MediaWiki extension for disabling source access to wikitext pages
