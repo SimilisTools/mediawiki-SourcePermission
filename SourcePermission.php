@@ -24,78 +24,40 @@ $wgExtensionCredits['parserhook'][] = array(
 );
 
 $wgExtensionMessagesFiles['SourcePermission'] = dirname( __FILE__ ) . '/SourcePermission.i18n.php';
-$wgHooks['EditPage::showEditForm:initial'][] = 'wfEditPre';
-$wgHooks['ArticleAfterFetchContent'][] = 'wfEditPreLock';
+$wgHooks['ArticleAfterFetchContentObject'][] = 'wfEditPreLock';
+
+$wgAvailableRights[] = 'source';
 
 $wgGroupPermissions['*']['source'] = false;
 $wgGroupPermissions['user'         ]['source'] = false;
 $wgGroupPermissions['autoconfirmed']['source'] = false;
 $wgGroupPermissions['bot'          ]['source'] = true; // registered bots
 $wgGroupPermissions['sysop'        ]['source'] = true;
-#$wgAvailableRights[] = 'source';
 
 
 $wgNamespacePermissionLockdown[NS_MAIN]['source'] = array('sysop');
 
 
-function wfEditPre ( $editPage, $output ) {
-
-	global $wgUser;
-	global $wgGroupPermissions;
-	global $wgNamespacePermissionLockdown;
-
-	$titlePage = $editPage->getTitle();
-	$namespace = $titlePage->getNamespace();
-	
-	$user_groups = $wgUser->getEffectiveGroups();
-
-	// First group permissions
-	$allowsource = 0;
-
-	foreach ( $user_groups as $user_group ) {
-
-		if ( isset($wgGroupPermissions[$user_group]['source']) ) {
-			if ( $wgGroupPermissions[$user_group]['source'] ) {
-				$allowsource = 1;
-				break;
-			}
-		}
-	}
-
-	// Later namespacce permissions
-	foreach ( $user_groups as $user_group ) {
-
-		if ( isset( $wgNamespacePermissionLockdown[$namespace]['source'] ) ) {
-			
-			$allowed_array = $wgNamespacePermissionLockdown[$namespace]['source'];
-			if ( in_array($user_group, $allowed_array ) ) {
-				$allowsource = 1;
-				break;
-			}
-		}
-	}
-
-	if ( $allowsource < 1 )  {
-		throw new PermissionsError( "sourcepermission", array() );
-		return false;
-	}
-	else {
-		return true;
-	}
-}
-
 function wfEditPreLock ( $article, &$content ) {
-
+	
 	global $wgUser;
-
-
-	#if ( $action == 'edit' && !$wgUser->isAllowed('source') ) {
-	#	$content = "";
-	#}
-	#return true;
 
 	global $wgGroupPermissions;
 	global $wgNamespacePermissionLockdown;
+
+	$action = "";
+
+	if ( class_exists('MediaWiki') ) {
+		$class = new MediaWiki();
+		$action = $class->getAction();
+	} else { 
+		return true; 
+	}
+	
+	if ( $action == 'edit' && !$wgUser->isAllowed('source') ) {
+		throw new PermissionsError("sourcepermission", array());
+	}
+
 
 	$titlePage = $article->getTitle();
 
@@ -105,23 +67,13 @@ function wfEditPreLock ( $article, &$content ) {
 
 	$allowsource = 0;
 
-	// Handle images when protected
+	// Handle images when protected -> Change to WhiteList NS
 	if ( $namespace == 6 ) return true;
-
-	$action = "";
-
-	if ( class_exists( 'MediaWiki' ) ) {
-		$class = new MediaWiki();
-		$action = $class->getAction();
-	}
-
-	else { return true; }
-
 
 	// First group permissions
 	foreach ( $user_groups as $user_group ) {
 
-		if ( isset( $wgGroupPermissions[$user_group]['source'] )  ) {
+		if ( isset( $wgGroupPermissions[$user_group]['source'] ) ) {
 			if ( $wgGroupPermissions[$user_group]['source'] ) {
 				$allowsource = 1;
 				break;
@@ -143,7 +95,7 @@ function wfEditPreLock ( $article, &$content ) {
 	}
 
 	if ( $allowsource < 1 && $action== 'edit' )  {
-		$content = "";
+		throw new PermissionsError("sourcepermission", array());
 	}
 
 	return true;
