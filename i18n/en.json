@@ -1,0 +1,9 @@
+{
+	"@metadata": {
+		"authors": [
+			"Toniher"
+		]
+	},
+	"sourcepermission-desc": "Adds source access user-right",
+	"action-sourcepermission": "access source"
+}

@@ -1,9 +1,9 @@
 <?php
 /**
  * SourcePermission adds a new user-right (compatible with Lockdown extension).
- * @version 0.1 - 2012/07/05
+ * @version 0.2 - 2014/10/11
  *
- * @link http://www.mediawiki.org/wiki/Extension:SourcePermission Documentation
+ * @link https://www.mediawiki.org/wiki/Extension:SourcePermission Documentation
  *
  * @file SourcePermission.php
  * @author Toniher
@@ -14,28 +14,31 @@ if ( !defined( 'MEDIAWIKI' ) ) {
 	die( 'This file is a MediaWiki extension, it is not a valid entry point' );
 }
 
-$wgExtensionCredits['parserhook'][] = array(
+/** It requires Lockdown extension !! **/
+
+$GLOBALS['wgExtensionCredits']['parserhook'][] = array(
 	'path' => __FILE__,
 	'name' => 'SourcePermission',
-	'version' => '0.1',
-	'url' => 'https://www.mediawiki.org/wiki/Extension:SourcePermission',
+	'version' => '0.2',
+	'url' => 'https://www.mediawiki.org/wiki/User:Toniher',
 	'author' => array( 'Toniher' ),
 	'descriptionmsg' => 'sourcepermission-desc',
 );
 
-$wgExtensionMessagesFiles['SourcePermission'] = dirname( __FILE__ ) . '/SourcePermission.i18n.php';
-$wgHooks['ArticleAfterFetchContentObject'][] = 'wfEditPreLock';
+$GLOBALS['wgMessagesDirs']['SourcePermission'] = __DIR__ . '/i18n';
+$GLOBALS['wgExtensionMessagesFiles']['SourcePermission'] = dirname( __FILE__ ) . '/SourcePermission.i18n.php';
+$GLOBALS['$wgHooks']['ArticleAfterFetchContentObject'][] = 'wfEditPreLock';
 
-$wgAvailableRights[] = 'source';
+$GLOBALS['wgAvailableRights'][] = 'source';
 
-$wgGroupPermissions['*']['source'] = false;
-$wgGroupPermissions['user'         ]['source'] = false;
-$wgGroupPermissions['autoconfirmed']['source'] = false;
-$wgGroupPermissions['bot'          ]['source'] = true; // registered bots
-$wgGroupPermissions['sysop'        ]['source'] = true;
+$GLOBALS['wgGroupPermissions']['*']['source'] = false;
+$GLOBALS['wgGroupPermissions']['user'         ]['source'] = false;
+$GLOBALS['wgGroupPermissions']['autoconfirmed']['source'] = false;
+$GLOBALS['wgGroupPermissions']['bot'          ]['source'] = true; // registered bots
+$GLOBALS['wgGroupPermissions']['sysop'        ]['source'] = true;
 
 
-$wgNamespacePermissionLockdown[NS_MAIN]['source'] = array('sysop');
+$GLOBALS['wgNamespacePermissionLockdown'][NS_MAIN]['source'] = array('sysop');
 
 
 function wfEditPreLock ( $article, &$content ) {
